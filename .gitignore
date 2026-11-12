@@ -1,0 +1,24 @@
+# Dependencias: se reinstalan con «npm install»
+node_modules/
+
+# Modelos y binarios grandes (≈210 MB). No cambian y se pueden volver a descargar (ver README, «Archivos fuera de git»).
+# Además ggml-base.bin pasa de 100 MB, el límite de GitHub por archivo.
+assets/whisper/
+assets/voces/*.onnx
+
+# Datos personales: nunca van al repositorio. Viven fuera de esta carpeta, pero por si alguien los copia aquí:
+*.clave
+ajustes.json
+ajustes.dañado.json
+aprendizaje.jsonl
+recordatorios.json
+documentos.db*
+.env
+.env.*
+
+# Temporales y del sistema
+*.tmp
+*.log
+Thumbs.db
+desktop.ini
+.vscode/

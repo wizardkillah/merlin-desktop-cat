@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' app:; script-src 'self' app: 'wasm-unsafe-eval' blob:; worker-src 'self' app: blob:; connect-src 'self' app: https://huggingface.co https://*.huggingface.co https://*.hf.co https://cdn-lfs.hf.co https://*.xethub.hf.co; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; media-src 'self' app: blob: mediastream:" />
+<title>Gatito brujo</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+<div id="stack">
+  <div id="bubble" class="hit hidden">
+    <button type="button" id="escuchar" class="hidden" title="Escuchar la respuesta" aria-label="Escuchar la respuesta">🔊</button>
+    <div id="q"></div>
+    <div id="answer"></div>
+    <div id="citas"></div>
+    <div id="status"></div>
+  </div>
+
+  <form id="panel" class="hit hidden" autocomplete="off">
+    <input id="input" placeholder="Pídeme algo... (Esc para cerrar)" />
+    <button type="button" id="voz" title="Voz activada: clic para silenciar" aria-label="Voz activada: clic para silenciar">🔊</button>
+    <button type="button" id="mic" title="Hablar (Ctrl+Shift+Espacio)">🎤</button>
+    <button type="submit" title="Enviar">➤</button>
+  </form>
+
+  <div id="catWrap" class="idle">
+    <div id="badge"></div>
+    <div id="oreja" class="hidden" title="Micrófono abierto: te escucho si dices «Merlín»" aria-label="Micrófono abierto">👂</div>
+    <canvas id="catVideo" class="hit hidden"></canvas>
+    <svg id="cat" viewBox="0 0 200 232" width="176" height="204">
+      <defs>
+        <radialGradient id="fur" cx="40%" cy="30%" r="75%"><stop offset="0" stop-color="#3b3452"/><stop offset="1" stop-color="#13101c"/></radialGradient>
+        <linearGradient id="hatg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8a5cf0"/><stop offset="1" stop-color="#3a2280"/></linearGradient>
+        <radialGradient id="eyeg" cx="50%" cy="35%" r="65%"><stop offset="0" stop-color="#f0ff9a"/><stop offset="1" stop-color="#6fcf45"/></radialGradient>
+      </defs>
+
+      <g id="rings"><circle cx="100" cy="125" r="66"/><circle cx="100" cy="125" r="66"/></g>
+      <ellipse cx="100" cy="224" rx="62" ry="7" fill="rgba(0,0,0,.28)"/>
+
+      <g class="hit" id="body">
+        <path id="tail" d="M140 204 C 186 198, 192 150, 172 128 C 165 120, 175 110, 184 119" stroke="#1b1726" stroke-width="13" fill="none" stroke-linecap="round"/>
+        <ellipse cx="100" cy="180" rx="50" ry="44" fill="url(#fur)"/>
+        <g id="pawL"><ellipse cx="78" cy="218" rx="16" ry="10" fill="#221d31"/></g>
+        <g id="pawR"><ellipse cx="122" cy="218" rx="16" ry="10" fill="#221d31"/></g>
+        <path d="M68 152 Q100 170 132 152" stroke="#7d50e0" stroke-width="7" fill="none" stroke-linecap="round"/>
+        <polygon points="100,158 102.6,164 109,164.4 104,168.4 105.8,174.6 100,171 94.2,174.6 96,168.4 91,164.4 97.4,164" fill="#f5c84c"/>
+
+        <g id="earL"><path d="M58 106 L48 50 L94 80 Z" fill="url(#fur)"/><path d="M62 97 L56 63 L84 81 Z" fill="#ff9ec4" opacity=".65"/></g>
+        <g id="earR"><path d="M142 106 L152 50 L106 80 Z" fill="url(#fur)"/><path d="M138 97 L144 63 L116 81 Z" fill="#ff9ec4" opacity=".65"/></g>
+
+        <ellipse cx="100" cy="114" rx="55" ry="46" fill="url(#fur)"/>
+        <ellipse cx="66" cy="131" rx="9" ry="6" fill="#ff7aa8" opacity=".3"/>
+        <ellipse cx="134" cy="131" rx="9" ry="6" fill="#ff7aa8" opacity=".3"/>
+
+        <g id="eyes">
+          <g><ellipse cx="78" cy="114" rx="13" ry="15" fill="url(#eyeg)"/><ellipse class="pupil" cx="78" cy="115" rx="4.5" ry="11" fill="#0c0913"/><circle class="shine" cx="73" cy="108" r="3.2" fill="#fff"/></g>
+          <g><ellipse cx="122" cy="114" rx="13" ry="15" fill="url(#eyeg)"/><ellipse class="pupil" cx="122" cy="115" rx="4.5" ry="11" fill="#0c0913"/><circle class="shine" cx="117" cy="108" r="3.2" fill="#fff"/></g>
+        </g>
+        <g id="eyesClosed" stroke="#a8e070" stroke-width="3" fill="none" stroke-linecap="round">
+          <path d="M66 116 Q78 124 90 116"/><path d="M110 116 Q122 124 134 116"/>
+        </g>
+
+        <path d="M95 130 L105 130 L100 136 Z" fill="#ff8fb8"/>
+        <path id="mouthC" d="M100 136 Q95 143 89 140 M100 136 Q105 143 111 140" stroke="#8d82ad" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <ellipse id="mouthO" cx="100" cy="142" rx="6" ry="5.5" fill="#ff6f9a" stroke="#0a0810" stroke-width="1.5"/>
+        <g stroke="#8a84a6" stroke-width="1.6" stroke-linecap="round">
+          <line x1="62" y1="132" x2="30" y2="125"/><line x1="62" y1="137" x2="28" y2="139"/><line x1="63" y1="142" x2="33" y2="150"/>
+          <line x1="138" y1="132" x2="170" y2="125"/><line x1="138" y1="137" x2="172" y2="139"/><line x1="137" y1="142" x2="167" y2="150"/>
+        </g>
+
+        <g id="hat">
+          <ellipse cx="100" cy="76" rx="63" ry="13" fill="#331d72"/>
+          <path d="M64 74 C 74 54, 84 32, 96 18 C 104 8, 118 2, 140 8 C 124 14, 116 24, 114 34 C 122 48, 130 60, 136 74 Z" fill="url(#hatg)"/>
+          <path d="M66 67 C 88 74, 112 74, 134 67 L 136 74 C 112 81, 88 81, 64 74 Z" fill="#f5c84c"/>
+          <polygon points="90,40 91.6,44 96,44.3 92.6,47 93.8,51.2 90,48.8 86.2,51.2 87.4,47 84,44.3 88.4,44" fill="#f5c84c" opacity=".9"/>
+          <circle cx="112" cy="54" r="2.2" fill="#f5c84c" opacity=".8"/>
+          <circle cx="80" cy="60" r="1.6" fill="#f5c84c" opacity=".7"/>
+          <polygon id="tipstar" points="140,0 142,5.5 148,5.8 143.4,9.4 145,15 140,11.8 135,15 136.6,9.4 132,5.8 138,5.5" fill="#ffe27a"/>
+        </g>
+      </g>
+
+      <g id="sparkles" fill="#ffe27a">
+        <text x="40" y="40">✦</text><text x="160" y="34">✧</text><text x="26" y="96">✦</text><text x="168" y="84">✧</text><text x="96" y="-2">✦</text>
+      </g>
+      <g id="zzz" fill="#cfc6ff" font-weight="bold"><text x="150" y="70">z</text><text x="162" y="52" font-size="20">Z</text><text x="176" y="30" font-size="26">Z</text></g>
+    </svg>
+  </div>
+</div>
+<script src="app.js" type="module"></script>
+</body>
+</html>

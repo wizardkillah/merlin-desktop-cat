@@ -1,0 +1,34 @@
+{
+  "name": "gatito-brujo",
+  "version": "1.0.0",
+  "description": "Asistente de escritorio: gatito negro brujo con IA local (LM Studio) y voz (Whisper)",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "lanzador": "powershell -ExecutionPolicy Bypass -File scripts/crear-lanzador.ps1",
+    "voz:pregrabar": "node --no-warnings scripts/pregrabar-voz.mjs",
+    "test:tools": "node --no-warnings scripts/test-tools.js",
+    "test:documentos": "node --no-warnings scripts/test-documentos.js",
+    "test:oido": "node --no-warnings scripts/test-oido.mjs",
+    "test:recordatorios": "node --no-warnings scripts/test-recordatorios.js",
+    "test:pantalla": "node --no-warnings scripts/test-pantalla.js",
+    "test:musica": "node --no-warnings scripts/test-musica.js",
+    "test:aprendizaje": "node --no-warnings scripts/test-aprendizaje.js",
+    "test:seguridad": "node --no-warnings scripts/test-seguridad.js",
+    "test:memoria": "node --no-warnings scripts/test-memoria.js",
+    "test:conversaciones": "node --no-warnings scripts/test-conversaciones.js",
+    "test:claude": "node --no-warnings scripts/test-claude.js",
+    "test:whisper": "electron . --test-whisper=scripts/prueba.wav"
+  },
+  "devDependencies": {
+    "electron": "^45.2.3"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
+    "@diffusionstudio/piper-wasm": "^1.0.0",
+    "@huggingface/transformers": "^4.3.2",
+    "fflate": "^0.8.3",
+    "unpdf": "^2.1.0"
+  }
+}

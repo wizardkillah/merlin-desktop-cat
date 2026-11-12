@@ -1,0 +1,36 @@
+const { contextBridge, ipcRenderer } = require("electron");
+
+const on = (ch) => (fn) => ipcRenderer.on(ch, (_e, ...a) => fn(...a));
+
+contextBridge.exposeInMainWorld("cat", {
+  getSettings: () => ipcRenderer.invoke("get-settings"),
+  ask: (text, opciones) => ipcRenderer.invoke("ask", text, opciones),
+  vozCortada: (datos) => ipcRenderer.send("voz-cortada", datos),
+  onRecordatorio: on("recordatorio"),
+  recordatorioEntregado: (id) => ipcRenderer.send("recordatorio-entregado", id),
+  guardarClave: (clave) => ipcRenderer.invoke("guardar-clave", clave),
+  oidoNativo: () => ipcRenderer.invoke("oido-nativo"),
+  transcribir: (audio) => ipcRenderer.invoke("transcribir", audio),
+  onPedirClave: on("pedir-clave"),
+  cancel: () => ipcRenderer.send("cancel"),
+  log: (...a) => ipcRenderer.send("log", ...a),
+  openUrl: (u) => ipcRenderer.send("open-url", u),
+  abrirCita: (ruta) => ipcRenderer.send("abrir-cita", ruta),
+  setVoz: (activa) => ipcRenderer.send("set-voz", activa),
+  testDone: (r) => ipcRenderer.send("test-done", r),
+  guardarPruebaVoz: (nombre, datos) => ipcRenderer.send("prueba-voz-guardar", nombre, datos),
+  setIgnore: (v) => ipcRenderer.send("set-ignore", v),
+  focus: () => ipcRenderer.send("focus"),
+  contextMenu: () => ipcRenderer.send("context-menu"),
+  drag: (dx, dy) => ipcRenderer.send("drag", { dx, dy }),
+  walk: (dist) => ipcRenderer.invoke("walk", dist),
+  stopWalk: () => ipcRenderer.send("stop-walk"),
+  trayIcon: (dataUrl) => ipcRenderer.send("tray-icon", dataUrl),
+  onToken: on("token"),
+  onStatus: on("status"),
+  onSay: on("say"),
+  onCursor: on("cursor"),
+  onToggleListen: on("toggle-listen"),
+  onOpenInput: on("open-input"),
+  onSettings: on("settings"),
+});

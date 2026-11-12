@@ -1,0 +1,117 @@
+html, body { margin: 0; height: 100%; background: transparent; overflow: hidden; user-select: none; font-family: "Segoe UI", system-ui, sans-serif; }
+#stack { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; padding: 0 10px; gap: 8px; }
+.hidden { display: none !important; }
+
+/* ---------- Bocadillo ---------- */
+#bubble {
+  width: 100%; max-height: 250px; overflow-y: auto; box-sizing: border-box;
+  background: rgba(28, 22, 46, .94); color: #f1ecff; border: 1.5px solid #7d50e0; border-radius: 16px;
+  padding: 11px 14px; font-size: 14px; line-height: 1.45; box-shadow: 0 6px 24px rgba(40, 10, 90, .45);
+  user-select: text; position: relative; animation: pop .18s ease-out;
+}
+#bubble::-webkit-scrollbar { width: 6px; } #bubble::-webkit-scrollbar-thumb { background: #5b3aa8; border-radius: 3px; }
+#escuchar { float: right; position: sticky; top: 0; margin: 0 0 4px 8px; width: 30px; height: 30px; padding: 0; border: 0; border-radius: 50%; background: #5b3aa8; color: #fff; font-size: 14px; cursor: pointer; }
+#escuchar:hover { background: #7d50e0; }
+#escuchar.sonando { background: #f59a3c; }
+#voz.silencio { background: #3a3350; }
+#q { color: #b9a8ef; font-size: 12px; margin-bottom: 4px; }
+#q:empty { display: none; }
+#status { color: #ffe27a; font-size: 12px; margin-top: 4px; }
+#status:empty { display: none; }
+#answer a { color: #9fd4ff; cursor: pointer; text-decoration: underline; }
+#answer b { color: #fff; }
+#citas:empty { display: none; }
+#citas { margin-top: 8px; display: flex; flex-direction: column; gap: 6px; }
+.cita { display: block; width: 100%; box-sizing: border-box; text-align: left; font: inherit; color: inherit; background: rgba(125, 80, 224, .16); border: 0; border-left: 3px solid #f59a3c; border-radius: 4px 8px 8px 4px; padding: 6px 8px; cursor: pointer; }
+.cita:hover { background: rgba(125, 80, 224, .3); }
+.cita .fuente { display: block; color: #f7c27f; font-size: 11.5px; font-weight: 600; margin-bottom: 2px; overflow-wrap: anywhere; }
+.cita .literal { display: block; font-size: 12.5px; line-height: 1.4; white-space: pre-wrap; overflow-wrap: anywhere; }
+@keyframes pop { from { transform: scale(.9) translateY(8px); opacity: 0; } }
+
+/* ---------- Panel de texto ---------- */
+#panel { width: 100%; display: flex; gap: 6px; animation: pop .18s ease-out; }
+#panel input {
+  flex: 1; min-width: 0; padding: 9px 12px; border-radius: 12px; border: 1.5px solid #7d50e0;
+  background: rgba(28, 22, 46, .96); color: #fff; font-size: 14px; outline: none;
+}
+#panel button { border: 0; border-radius: 12px; width: 40px; background: #5b3aa8; color: #fff; font-size: 16px; cursor: pointer; }
+#panel button:hover { background: #7d50e0; }
+#mic.on { background: #e0507d; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { box-shadow: 0 0 0 6px rgba(224, 80, 125, .3); } }
+
+/* ---------- Gatito ---------- */
+#catWrap { position: relative; width: 130px; height: 151px; flex-shrink: 0; }
+#catWrap.conVideo { width: 190px; height: 190px; }
+#catWrap.conVideo #cat { display: none; }
+#cat { width: 130px; height: 151px; }
+#catVideo { display: block; width: 190px; height: 190px; cursor: grab; transform-origin: 50% 95%; }
+#oreja { position: absolute; top: 6px; right: 14px; font-size: 13px; opacity: .55; pointer-events: none; }
+.listening #oreja { opacity: 1; }
+#catWrap.happy #catVideo { animation: mimo .7s ease-out; }
+@keyframes mimo { 30% { transform: scale(1.05, .95); } 60% { transform: scale(.98, 1.03); } }
+.walking #catVideo { animation: hopVideo .32s ease-in-out infinite alternate; }
+@keyframes hopVideo { to { translate: 0 -4px; } }
+#cat { overflow: visible; display: block; filter: drop-shadow(0 0 1.5px rgba(190, 160, 255, .7)); }
+#cat .hit, #body { cursor: grab; }
+#badge { position: absolute; top: -4px; left: 50%; transform: translateX(-50%); white-space: nowrap; font-size: 11px; color: #ffe27a; background: rgba(28, 22, 46, .9); padding: 2px 8px; border-radius: 8px; }
+#badge:empty { display: none; }
+
+#body { transform-origin: 100px 224px; animation: breathe 3.2s ease-in-out infinite; }
+@keyframes breathe { 50% { transform: scale(1.015, .985); } }
+#tail { transform-origin: 140px 204px; animation: tail 2.6s ease-in-out infinite; }
+@keyframes tail { 0%, 100% { transform: rotate(-4deg); } 50% { transform: rotate(9deg); } }
+#hat { transform-origin: 100px 76px; transition: transform .3s; }
+#tipstar { transform-origin: 140px 8px; animation: twinkle 2s ease-in-out infinite; }
+@keyframes twinkle { 50% { transform: scale(.7) rotate(20deg); opacity: .7; } }
+#earL { transform-origin: 72px 96px; transition: transform .25s; }
+#earR { transform-origin: 128px 96px; transition: transform .25s; }
+#eyes { transform-origin: 100px 114px; }
+#eyes.blink { animation: blink .16s ease-in-out; }
+@keyframes blink { 50% { transform: scaleY(.08); } }
+.pupil, .shine { transition: transform .12s linear; }
+#eyesClosed, #mouthO, #sparkles, #zzz, #rings { display: none; }
+
+/* Escuchando: orejas en alerta, ondas mágicas */
+.listening #earL { transform: rotate(-10deg) translateY(-5px); }
+.listening #earR { transform: rotate(10deg) translateY(-5px); }
+.listening #rings { display: block; }
+#rings circle { fill: none; stroke: #9b6bff; stroke-width: 3; transform-origin: 100px 125px; animation: ring 1.6s ease-out infinite; }
+#rings circle:nth-child(2) { animation-delay: .8s; }
+@keyframes ring { from { transform: scale(.85); opacity: .9; } to { transform: scale(1.45); opacity: 0; } }
+
+/* Pensando: chispas alrededor del sombrero */
+.thinking #sparkles { display: block; }
+.thinking #hat { animation: wobble 1.2s ease-in-out infinite; }
+@keyframes wobble { 25% { transform: rotate(-4deg); } 75% { transform: rotate(4deg); } }
+#sparkles text { font-size: 16px; animation: spark 1.4s ease-in-out infinite; }
+#sparkles text:nth-child(2) { animation-delay: .3s; } #sparkles text:nth-child(3) { animation-delay: .6s; }
+#sparkles text:nth-child(4) { animation-delay: .9s; } #sparkles text:nth-child(5) { animation-delay: 1.1s; }
+@keyframes spark { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+
+/* Hablando */
+.talking #mouthC { display: none; }
+.talking #mouthO { display: block; transform-origin: 100px 142px; animation: talk .22s ease-in-out infinite alternate; }
+@keyframes talk { from { transform: scaleY(.25); } to { transform: scaleY(1); } }
+
+/* Durmiendo */
+.sleeping #eyes { display: none; }
+.sleeping #eyesClosed, .sleeping #zzz { display: block; }
+.sleeping #hat { transform: rotate(-12deg) translate(-4px, 4px); }
+.sleeping #tail { animation-duration: 6s; }
+#zzz text { animation: zzz 3s ease-in infinite; }
+#zzz text:nth-child(2) { animation-delay: 1s; } #zzz text:nth-child(3) { animation-delay: 2s; }
+@keyframes zzz { 0% { opacity: 0; transform: translateY(8px); } 40% { opacity: 1; } 100% { opacity: 0; transform: translateY(-14px); } }
+
+/* Paseando */
+.walking #cat { animation: hop .32s ease-in-out infinite alternate; }
+.walking.left #cat { transform-origin: bottom; rotate: -4deg; }
+.walking.right #cat { transform-origin: bottom; rotate: 4deg; }
+.walking #pawL { animation: paw .32s ease-in-out infinite alternate; }
+.walking #pawR { animation: paw .32s ease-in-out infinite alternate-reverse; }
+@keyframes hop { to { translate: 0 -6px; } }
+@keyframes paw { to { transform: translateY(-5px); } }
+
+/* Contento (al acariciarlo) */
+.happy #eyes { display: none; }
+.happy #eyesClosed { display: block; }
+.happy #eyesClosed path { transform: scaleY(-1); transform-box: fill-box; transform-origin: center; }

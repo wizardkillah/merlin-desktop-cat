@@ -1,0 +1,38 @@
+{
+  "carpeta": "Imagenes Merlin",
+  "icono": "openart-0217941464959060f20bbdfc8ca54d9bbb0533a8546905c980ec8_1794146583714_5ebc90b9.png",
+  "portada": "openart-0217941465984679e96f8c80ac47960a454270e9930f95464a7ef_1794146684443_8a7f1f1c.png",
+  "hojaPersonaje": "openart-021794145935807ef9a07adf34cf0fac1320e81624057e074f3e9_1794146005008_09c33bef.jpg",
+  "estados": {
+    "idle": {
+      "video": "openart-68c7b41c3d732a06b2bd5bc9309a0129-9a124817-6053-4d90-89b8-5dbbf6b46e84_1794146923579_2181c0dd.mp4",
+      "imagen": "openart-021794146052658023ef2751affb9822ae18449966cb6b93909ee_1794146085843_e2501677.png",
+      "verde": 62, "cx": 650, "cy": 351, "lado": 700
+    },
+    "listening": {
+      "video": "openart-a42ea03ad9d84eef85bcce5b53194710-04dc0714-0669-4af7-8de5-82389e6e0e68_1794147032336_daa6636e.mp4",
+      "imagen": "openart-0217941461418865b7c5d80188542749d9bf0e4ecbfb37fd4ee9d_1794146167006_5bf23c46.png",
+      "verde": 101, "cx": 640, "cy": 270, "lado": 900, "fundidoAbajo": 0.07, "fundidoArriba": 0.02, "bucle": [1, 5]
+    },
+    "thinking": {
+      "video": "openart-eccff43e42d489146a752b5a37ac17da-cb74ed6d-ce5e-4867-869c-6396947ae51f_1794147143384_c868f086.mp4",
+      "imagen": "openart-021794146195777e06db01f38fbb905edbc4e87c2816c5e552d56_1794146221232_701c8b6b.png",
+      "verde": 73, "cx": 650, "cy": 310, "lado": 820, "fundidoAbajo": 0.07, "ocultar": [825, 590, 1280, 720]
+    },
+    "talking": {
+      "video": "openart-4d3d8482262cd2b81dcc97c50921c9d1-dede4084-5443-4d31-b03f-60f57a822e1d_1794147242499_8eeca1f4.mp4",
+      "imagen": "openart-021794146250730c4d1375e87394ab549407fb4b34ce52e92ecba_1794146275877_7a5b44f8.png",
+      "verde": 77, "cx": 620, "cy": 345, "lado": 700
+    },
+    "sleeping": {
+      "video": "openart-de041aed8a7d297ab61f83a216384191-088b35f9-24d8-470b-8aab-58face099715_1794147337486_626b3da4.mp4",
+      "imagen": "openart-02179414631370451d9d16403af386b151f4b49e66855155b7f88_1794146347172_d6bb3bb5.png",
+      "verde": 152, "cx": 660, "cy": 209, "lado": 1010, "fundidoArriba": 0.02
+    },
+    "walking": {
+      "video": "openart-412b4cc2d0936e66d5107c259ff95d51-d9146940-b004-4858-8c0c-71a66287883f_1794147425031_5aa984d6.mp4",
+      "imagen": "openart-021794146405388db3bb9a137825ab7489fb7012a5d616f617dd9_1794146432909_b6c22377.png",
+      "verde": 117, "cx": 600, "cy": 342, "lado": 740, "fundidoArriba": 0.02
+    }
+  }
+}
