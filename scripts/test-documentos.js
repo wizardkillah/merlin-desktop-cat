@@ -9,6 +9,15 @@ const { makeTools } = require("../src/tools");
 const { rutaInmediata, elegirCitas, revisarComillas, parseToolCall } = require("../src/brain");
 
 let ok = 0, mal = 0;
+// El OCR usa el motor de Windows y necesita el idioma español instalado (ver scripts/ocr-pdf.ps1 -Idiomas)
+function ocrDisponible() {
+  if (process.platform !== "win32") return false;
+  try {
+    const powershell = path.join(process.env.SystemRoot || "C:/Windows", "System32", "WindowsPowerShell", "v1.0", "powershell.exe");
+    const salida = execFileSync(powershell, ["-NoProfile", "-NonInteractive", "-ExecutionPolicy", "Bypass", "-File", path.join(__dirname, "ocr-pdf.ps1"), "-Idiomas"], { encoding: "utf8", windowsHide: true, timeout: 60000 });
+    return JSON.parse(salida).idiomas.some((i) => /^es/i.test(i));
+  } catch { return false; }
+}
 const prueba = (nombre, cond, extra = "") => { if (cond) { ok++; console.log("  ok ", nombre); } else { mal++; console.log("  MAL", nombre, extra); } };
 
 const dir = fs.mkdtempSync(path.join(os.tmpdir(), "merlin-prueba-"));
@@ -55,8 +64,13 @@ const raices = [dir];
   const escaneo = await crearEscaneo(path.join(dir, "escaneo.pdf"), FRASES);
   const ocr = await docs.extraer(escaneo);
   const leido = ocr.map((s) => s.texto).join(" ").replace(/\s+/g, " ");
-  prueba("el OCR lee un PDF que solo contiene una imagen", ocr.length === 1 && ocr[0].loc === "pág. 1, OCR", JSON.stringify(ocr).slice(0, 200));
-  FRASES.forEach((f) => prueba(`OCR exacto: «${f}»`, leido.includes(f), leido));
+  if (ocrDisponible()) {
+    prueba("el OCR lee un PDF que solo contiene una imagen", ocr.length === 1 && ocr[0].loc === "pág. 1, OCR", JSON.stringify(ocr).slice(0, 200));
+    FRASES.forEach((f) => prueba(`OCR exacto: «${f}»`, leido.includes(f), leido));
+  } else {
+    // Ocurre, por ejemplo, en los ejecutores de GitHub Actions. El resto de la prueba sigue: un escaneo sin leer queda como «ilegible».
+    console.log("  omitido: este Windows no tiene el idioma español para el OCR (4 comprobaciones)");
+  }
   const roto = escribir("roto.pdf", "esto no es un pdf");
   prueba("un PDF dañado da error, no cuelga", await docs.extraer(roto).then(() => false, () => true));
 
