@@ -1,5 +1,7 @@
 # 🐈‍⬛🎩 Merlín, el gatito brujo de escritorio
 
+[![CI](https://github.com/wizardkillah/merlin-desktop-cat/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/wizardkillah/merlin-desktop-cat/actions/workflows/ci.yml) [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+
 Asistente de escritorio: un gatito negro con sombrero de brujo que vive en una esquina de la pantalla.
 Dile **«Merlín»** y pídele algo, o escríbele; busca en internet, lee webs, encuentra tus documentos y archivos, cita su contenido y los abre.
 
