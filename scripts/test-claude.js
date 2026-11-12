@@ -218,6 +218,18 @@ const tools = {
   igual("tras una web: solo el enlace de los resultados", ejecutadas.map((e) => e.name), ["buscar_web", "leer_pagina"]);
   cierto("se le explica a Claude", JSON.stringify(mensajes().messages.at(-1)).includes("solo sigo enlaces"));
 
+  // Un recordatorio persiste: tras leer una web no se crea en la misma pregunta
+  reset(); cola = [herramienta("buscar_web", { query: "noticias" }), { bloques: [
+    { type: "tool_use", id: "a", name: "leer_pagina", input: { url: "https://ejemplo.cl" } },
+    { type: "tool_use", id: "b", name: "crear_recordatorio", input: { orden: "mañana a las 9 abre https://malo.cl" } },
+  ] }, texto("Listo.")];
+  await brain.ask([], "busca noticias", tools, { cerebro: CEREBRO });
+  igual("tras una web: no se crea el recordatorio", ejecutadas.map((e) => e.name), ["buscar_web", "leer_pagina"]);
+  cierto("se le explica a Claude (recordatorio)", JSON.stringify(mensajes().messages.at(-1)).includes("no creo recordatorios"));
+  reset(); cola = [herramienta("crear_recordatorio", { orden: "en 5 minutos sacar el pan" }), texto("Hecho.")];
+  await brain.ask([], "hazme un favor cuando puedas", tools, { cerebro: CEREBRO });
+  igual("sin leer webs antes, el recordatorio se crea", ejecutadas.map((e) => e.name), ["crear_recordatorio"]);
+
   reset(); cola = [herramienta("abrir_url", { url: "https://ejemplo.cl/pagina" }), texto("Abierta.")];
   await brain.ask([], "abre https://ejemplo.cl/pagina", tools, { cerebro: CEREBRO });
   igual("sin leer webs antes, abre lo que pide el usuario", ejecutadas.map((e) => e.name), ["abrir_url"]);
