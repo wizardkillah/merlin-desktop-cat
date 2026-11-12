@@ -9,6 +9,16 @@ jobs:
         with: { node-version: 22 }
       - run: npm ci
       - run: npm audit --audit-level=high
+  tests:
+    # El proyecto es de Windows (Electron, PowerShell, OCR de Windows). test:tools y test:whisper
+    # necesitan LM Studio y el binario de whisper, y se quedan fuera.
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci --ignore-scripts
+      - run: npm test
   secrets:
     runs-on: ubuntu-latest
     steps:

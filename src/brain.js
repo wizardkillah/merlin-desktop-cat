@@ -116,12 +116,15 @@ const LEE_WEB = new Set(["buscar_web", "leer_pagina"]);
 const CON_URL = new Set(["leer_pagina", "abrir_url"]);
 const SOLO_ENLACES_VISTOS = "Por seguridad, después de leer una web solo sigo enlaces que aparecen en lo leído o que me dio el usuario. Responde con lo que ya tienes.";
 const NO_ABRE_TRAS_WEB = "Por seguridad, después de leer una web no abro archivos en la misma pregunta. Responde con lo que ya tienes.";
+// Un recordatorio persiste y Merlín lo dirá en voz alta más tarde: no puede nacer de lo que decía una página
+const NO_RECUERDA_TRAS_WEB = "Por seguridad, después de leer una web no creo recordatorios en la misma pregunta. Pídemelo aparte.";
 function guardiaWeb(userText) {
   const g = { leyo: false, visto: userText };
   return {
     bloqueo(name, args) {
       if (!g.leyo) return null;
       if (name === "abrir_archivo") return NO_ABRE_TRAS_WEB;
+      if (name === "crear_recordatorio") return NO_RECUERDA_TRAS_WEB;
       if (CON_URL.has(name)) {
         const url = String(args?.url || "");
         if (!url || !(g.visto.includes(url) || g.visto.includes(url.replace(/\/+$/, "")))) return SOLO_ENLACES_VISTOS;

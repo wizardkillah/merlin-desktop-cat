@@ -8,6 +8,7 @@
     "start": "electron .",
     "lanzador": "powershell -ExecutionPolicy Bypass -File scripts/crear-lanzador.ps1",
     "voz:pregrabar": "node --no-warnings scripts/pregrabar-voz.mjs",
+    "test": "node --no-warnings scripts/test-seguridad.js && node --no-warnings scripts/test-documentos.js && node --no-warnings scripts/test-oido.mjs && node --no-warnings scripts/test-recordatorios.js && node --no-warnings scripts/test-pantalla.js && node --no-warnings scripts/test-musica.js && node --no-warnings scripts/test-aprendizaje.js && node --no-warnings scripts/test-memoria.js && node --no-warnings scripts/test-conversaciones.js && node --no-warnings scripts/test-claude.js",
     "test:tools": "node --no-warnings scripts/test-tools.js",
     "test:documentos": "node --no-warnings scripts/test-documentos.js",
     "test:oido": "node --no-warnings scripts/test-oido.mjs",

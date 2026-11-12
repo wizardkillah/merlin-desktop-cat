@@ -115,7 +115,8 @@ function renderCitas(citas) {
   bubble.scrollTop = 0;
 }
 function renderAnswer(text) {
-  const esc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  // Las comillas también: un enlace con " rompería el atributo data-url e inyectaría atributos (style, por ejemplo)
+  const esc = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   $("answer").innerHTML = esc
     .replace(/\*\*(.+?)\*\*/g, "<b>$1</b>")
     .replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, '<a data-url="$2">$1</a>')

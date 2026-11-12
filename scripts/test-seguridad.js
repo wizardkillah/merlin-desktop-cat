@@ -45,6 +45,16 @@ const cierto = (nombre, v) => { if (v) ok++; else { mal++; console.log(`✘ ${no
   cierto("un dominio público sí", await destinoPublico("https://es.wikipedia.org/wiki/Gato", publica));
   cierto("file: no", !(await destinoPublico("file:///C:/Windows/win.ini", publica)));
 
+  // --- IPv6 con una IPv4 dentro: el analizador de URLs las escribe en hexadecimal ---
+  for (const url of ["http://[::ffff:127.0.0.1]:1235/", "http://[::ffff:192.168.1.1]/", "http://[::ffff:10.0.0.1]/", "http://[::127.0.0.1]/",
+    "http://[64:ff9b::7f00:1]/", "http://[::ffff:0:127.0.0.1]/", "http://[2002:7f00:1::]/", "http://[::ffff:169.254.169.254]/"]) {
+    cierto(`${url} no (${new URL(url).hostname})`, !(await destinoPublico(url, publica)));
+  }
+  for (const ip of ["::ffff:7f00:1", "::ffff:c0a8:101", "::ffff:a00:1", "::7f00:1", "64:ff9b::a00:1", "2001:0:4136:e378::1", "fec0::1", "ff02::1", "::"]) cierto(`${ip} es privada`, esIpPrivada(ip));
+  for (const ip of ["::ffff:808:808", "::ffff:8.8.8.8", "64:ff9b::808:808", "2001:4860:4860::8888", "2606:4700::1111"]) cierto(`${ip} es pública`, !esIpPrivada(ip));
+  cierto("un dominio con AAAA ::ffff:7f00:1 no", !(await destinoPublico("https://trampa6.example/", async () => [{ address: "::ffff:7f00:1" }])));
+  cierto("un dominio con AAAA pública sí", await destinoPublico("https://ok6.example/", async () => [{ address: "2606:4700::1111" }]));
+
   fs.rmSync(raiz, { recursive: true, force: true });
   fs.rmSync(fuera, { recursive: true, force: true });
   console.log(mal ? `\n${ok} bien, ${mal} mal` : `✔ ${ok}/${ok}`);

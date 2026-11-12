@@ -49,14 +49,46 @@ async function webSearch({ query, max = 5 }) {
 }
 
 // Direcciones de este PC o de la red de casa: LM Studio, Voice Studio, el router… Una web no debe poder hacer que se pidan.
+// Un IPv6 puede llevar una IPv4 dentro, y el analizador de URLs la escribe en hexadecimal:
+// http://[::ffff:127.0.0.1]/ llega como ::ffff:7f00:1. Se saca la IPv4 para juzgarla como tal.
+function gruposIpv6(ip) {
+  let s = ip.toLowerCase();
+  const punto = s.match(/(\d+)\.(\d+)\.(\d+)\.(\d+)$/);
+  if (punto) {
+    const [a, b, c, d] = punto.slice(1).map(Number);
+    s = s.slice(0, -punto[0].length) + ((a << 8) | b).toString(16) + ":" + ((c << 8) | d).toString(16);
+  }
+  const partes = s.split("::");
+  if (partes.length > 2) return null;
+  const izq = partes[0] ? partes[0].split(":") : [];
+  const der = partes.length === 2 && partes[1] ? partes[1].split(":") : [];
+  if (partes.length === 1 ? izq.length !== 8 : izq.length + der.length > 7) return null;
+  const g = [...izq, ...Array(8 - izq.length - der.length).fill("0"), ...der].map((x) => parseInt(x, 16));
+  return g.every((x) => x >= 0 && x <= 0xffff) ? g : null;
+}
+function ipv4Incrustada(ip) {
+  const g = gruposIpv6(ip);
+  if (!g) return null;
+  const v4 = (hi, lo) => [hi >> 8, hi & 255, lo >> 8, lo & 255].join(".");
+  const [a, b, c, d, e, f, x, y] = g;
+  if (a === 0 && b === 0 && c === 0 && d === 0 && e === 0 && (f === 0xffff || f === 0)) return v4(x, y); // ::ffff:a.b.c.d y ::a.b.c.d
+  if (a === 0 && b === 0 && c === 0 && d === 0 && e === 0xffff && f === 0) return v4(x, y); // ::ffff:0:a.b.c.d
+  if (a === 0x64 && b === 0xff9b && c === 0 && d === 0 && e === 0 && f === 0) return v4(x, y); // NAT64
+  if (a === 0x2002) return v4(b, c); // 6to4
+  return null;
+}
 function esIpPrivada(ip) {
-  const v4 = ip.replace(/^::ffff:/i, "");
-  if (net.isIPv4(v4)) {
-    const [a, b] = v4.split(".").map(Number);
+  let s = String(ip).toLowerCase().replace(/^\[|\]$/g, "").replace(/%.*$/, "");
+  if (net.isIPv6(s)) {
+    if (/^2001:0{0,4}:/.test(s)) return true; // Teredo
+    const incrustada = ipv4Incrustada(s);
+    if (incrustada) s = incrustada;
+  }
+  if (net.isIPv4(s)) {
+    const [a, b] = s.split(".").map(Number);
     return a === 0 || a === 10 || a === 127 || (a === 169 && b === 254) || (a === 172 && b >= 16 && b <= 31) || (a === 192 && b === 168) || (a === 100 && b >= 64 && b <= 127) || a >= 224;
   }
-  const s = ip.toLowerCase();
-  return s === "::" || s === "::1" || /^f[cd]/.test(s) || /^fe[89ab]/.test(s);
+  return s === "::" || s === "::1" || /^f[cd]/.test(s) || /^fe[89abcdef]/.test(s) || /^ff/.test(s);
 }
 async function destinoPublico(url, buscarIp = (h) => dns.lookup(h, { all: true })) {
   let u;

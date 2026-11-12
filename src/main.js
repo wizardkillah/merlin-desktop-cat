@@ -116,6 +116,9 @@ function createWindow() {
   });
   win.setAlwaysOnTop(true, "floating");
   win.setIgnoreMouseEvents(true, { forward: true });
+  // La ventana solo muestra la interfaz propia: si algo intentara abrir otra página, esa página heredaría window.cat
+  win.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  win.webContents.on("will-navigate", (e, url) => { if (!url.startsWith("app://local/")) e.preventDefault(); });
   win.loadURL("app://local/src/renderer/index.html" + (TEST_WAV ? "?test=1" : PRUEBA_VOZ ? `?pruebavoz=${encodeURIComponent(argumento("prueba-voz-modo") || "programa")}` : ""));
 
   // Los ojos siguen al ratón por todo el escritorio
